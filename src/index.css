@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-white font-sans overflow-x-hidden;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-surface;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary/30 rounded hover:bg-primary/50 transition-colors;
+  }
+}
+
+@layer components {
+  .btn-cyber {
+    @apply relative px-6 py-2 font-mono font-bold uppercase tracking-wider transition-all duration-300 border border-primary text-primary hover:bg-primary hover:text-black hover:shadow-neon-green disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .card-cyber {
+    @apply bg-surface border border-white/10 backdrop-blur-sm relative overflow-hidden transition-all duration-300 hover:border-primary/50 hover:shadow-neon-green;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 10px currentColor;
+  }
+}
+
+/* CRT Scanline Effect */
+.scanlines::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 2;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+}
