@@ -56,13 +56,23 @@ const MOCK_NEWS = [
 ];
 
 export const fetchCyberNews = async () => {
-    if (!API_KEY) {
-        console.warn("No NewsAPI Key found. Using mock data.");
-        return MOCK_NEWS;
+    // In production, we use the Vercel Proxy (/api/news) to bypass CORS/Free Tier limits.
+    // In development (localhost), we can call NewsAPI directly.
+    const isProd = import.meta.env.PROD;
+
+    let url;
+    if (isProd) {
+        url = '/api/news';
+    } else {
+        if (!API_KEY) {
+            console.warn("No NewsAPI Key found. Using mock data.");
+            return MOCK_NEWS;
+        }
+        url = `${BASE_URL}?q=cybersecurity OR malware OR ransomware OR "data breach"&sortBy=publishedAt&language=en&apiKey=${API_KEY}`;
     }
 
     try {
-        const response = await fetch(`${BASE_URL}?q=cybersecurity OR malware OR ransomware OR "data breach"&sortBy=publishedAt&language=en&apiKey=${API_KEY}`);
+        const response = await fetch(url);
 
         if (!response.ok) {
             throw new Error(`API Error: ${response.statusText}`);
@@ -70,8 +80,13 @@ export const fetchCyberNews = async () => {
 
         const data = await response.json();
 
+        // Handle case where proxy returns error JSON
+        if (data.error) {
+            throw new Error(data.error);
+        }
+
         // Filter out articles with no image or removed content
-        const validArticles = data.articles.filter(article =>
+        const validArticles = (data.articles || []).filter(article =>
             article.urlToImage &&
             article.title !== "[Removed]" &&
             article.description
