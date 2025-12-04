@@ -9,7 +9,6 @@ export default function NewsPage() {
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
 
-  // Load news function
   async function loadNews() {
     try {
       const articles = await fetchCyberNews();
@@ -24,23 +23,21 @@ export default function NewsPage() {
 
   useEffect(() => {
     loadNews(); // initial load
-    const interval = setInterval(loadNews, 300000); // every 5 mins
+    const interval = setInterval(loadNews, 300000); // every 5 minutes
     return () => clearInterval(interval);
   }, []);
 
-  if (loading) return <p>Loading...</p>;
-
-  // Open modal preview
-  function openModal(article) {
+  const openModal = (article) => {
     setSelectedArticle(article);
     setModalOpen(true);
-  }
+  };
 
-  // Close modal
-  function closeModal() {
+  const closeModal = () => {
     setSelectedArticle(null);
     setModalOpen(false);
-  }
+  };
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <div className="news-container">
@@ -52,13 +49,18 @@ export default function NewsPage() {
       <div className="news-grid">
         {news.map((item, index) => (
           <div key={index} className="news-card">
-            <img src={item.image} alt={item.title} />
+            {item.image && <img src={item.image} alt={item.title} />}
             <h3>{item.title}</h3>
             <p>{item.description}</p>
-            <button className="read-more" onClick={() => openModal(item)}>
+            <button className="read-more-btn" onClick={() => openModal(item)}>
               Preview →
             </button>
-            <a href={item.url} target="_blank" rel="noopener noreferrer" className="read-more">
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="read-full-btn"
+            >
               Read full article →
             </a>
           </div>
@@ -69,12 +71,21 @@ export default function NewsPage() {
       {modalOpen && selectedArticle && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="close-btn" onClick={closeModal}>Close</button>
+            <button className="close-btn" onClick={closeModal}>
+              ×
+            </button>
             <h2>{selectedArticle.title}</h2>
             <p><em>{selectedArticle.source.name}</em></p>
-            {selectedArticle.image && <img src={selectedArticle.image} alt={selectedArticle.title} />}
+            {selectedArticle.image && (
+              <img src={selectedArticle.image} alt={selectedArticle.title} />
+            )}
             <p>{selectedArticle.content || selectedArticle.description}</p>
-            <a href={selectedArticle.url} target="_blank" rel="noopener noreferrer" className="read-more">
+            <a
+              href={selectedArticle.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="read-full-btn"
+            >
               Read full article →
             </a>
           </div>
