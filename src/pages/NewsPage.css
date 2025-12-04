@@ -1,122 +1,119 @@
-/* Container and general layout */
 .news-container {
   padding: 20px;
-  color: #fff;
-  font-family: Arial, sans-serif;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: auto;
+  font-family: Arial, sans-serif;
 }
 
 .last-updated {
-  font-size: 14px;
-  color: #aaa;
+  font-size: 0.9rem;
+  color: #555;
   margin-bottom: 10px;
 }
 
-/* Grid layout for news cards */
 .news-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
-  margin-top: 20px;
 }
 
-/* Each news card styling */
 .news-card {
-  background: #111;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   padding: 15px;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
 }
 
 .news-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 
 .news-card img {
   width: 100%;
-  height: 180px;
+  height: 160px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 5px;
+  margin-bottom: 10px;
 }
 
 .news-card h3 {
-  margin: 0;
-  font-size: 18px;
+  font-size: 1.1rem;
+  margin: 5px 0;
 }
 
 .news-card p {
-  font-size: 14px;
-  opacity: 0.8;
+  font-size: 0.95rem;
+  color: #333;
 }
 
-/* Read more button */
-.read-more {
-  background-color: #4cc9f0;
+.read-more-btn, .read-full-btn {
+  margin-top: 8px;
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 5px;
   border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  color: #111;
   cursor: pointer;
-  font-weight: bold;
-  align-self: flex-start;
+  text-decoration: none;
 }
 
-.read-more:hover {
-  background-color: #3bb0d0;
+.read-more-btn {
+  background: #007bff;
+  color: white;
+  margin-right: 8px;
 }
 
-/* Modal overlay and content */
+.read-full-btn {
+  background: #28a745;
+  color: white;
+}
+
+.read-more-btn:hover {
+  background: #0056b3;
+}
+
+.read-full-btn:hover {
+  background: #1e7e34;
+}
+
+/* Modal */
 .modal-overlay {
   position: fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background: rgba(0,0,0,0.8);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:1000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
 .modal-content {
-  background:#111;
-  padding:20px;
-  border-radius:12px;
-  width:90%;
-  max-width:900px;
-  color:#fff;
-  max-height:90vh;
-  overflow-y:auto;
-  display:flex;
-  flex-direction:column;
-  gap:15px;
+  background: white;
+  padding: 20px;
+  max-width: 700px;
+  width: 90%;
+  border-radius: 10px;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .modal-content img {
-  width:100%;
-  border-radius:8px;
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 5px;
 }
 
 .close-btn {
-  background:#ff5555;
-  border:none;
-  padding:8px 12px;
-  border-radius:6px;
-  cursor:pointer;
-  color:#fff;
-  font-weight:bold;
-  align-self: flex-start;
-}
-
-/* Responsive tweaks */
-@media screen and (max-width: 768px) {
-  .news-card img {
-    height: 150px;
-  }
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.5rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
 }
