@@ -1,47 +1,34 @@
 import { useEffect, useState } from "react";
-import "./News.css"; // CSS file we will create next
+import { fetchCyberNews } from "../services/NewsService";
+import "./NewsPage.css";
 
-export default function News() {
+export default function NewsPage() {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalArticle, setModalArticle] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
 
-  // Fetch live news from API
-  async function loadNews() {
+  const loadNews = async () => {
+    setLoading(true);
     try {
-      const response = await fetch("/api/fetchNews");
-      const json = await response.json();
-      setNews(json.articles || []);
-      setLoading(false);
-
-      // Save articles for modal lookup
-      localStorage.setItem("newsData", JSON.stringify(json.articles || []));
-
-      // Update last refreshed time
+      const articles = await fetchCyberNews();
+      setNews(articles);
       setLastUpdated(new Date().toLocaleTimeString());
+      setLoading(false);
     } catch (err) {
-      console.error("Error loading news:", err);
+      console.error("Error fetching news:", err);
       setLoading(false);
     }
-  }
+  };
 
-  // Initial load + auto-refresh every 5 minutes
   useEffect(() => {
-    loadNews();
-    const interval = setInterval(loadNews, 300000); // 300000ms = 5 minutes
+    loadNews(); // first load
+    const interval = setInterval(loadNews, 300000); // refresh every 5 min
     return () => clearInterval(interval);
   }, []);
 
-  // Open modal for full article
-  const openModal = (article) => {
-    setModalArticle(article);
-  };
-
-  // Close modal
-  const closeModal = () => {
-    setModalArticle(null);
-  };
+  const openModal = (article) => setModalArticle(article);
+  const closeModal = () => setModalArticle(null);
 
   if (loading) return <p>Loading news...</p>;
 
@@ -55,7 +42,7 @@ export default function News() {
       <div className="news-grid">
         {news.map((item, index) => (
           <div key={index} className="news-card">
-            {item.image && <img src={item.image} alt={item.title} />}
+            {item.urlToImage && <img src={item.urlToImage} alt={item.title} />}
             <h3>{item.title}</h3>
             <p>{item.description}</p>
             <button className="read-more" onClick={() => openModal(item)}>
@@ -65,20 +52,19 @@ export default function News() {
         ))}
       </div>
 
-      {/* Modal for full article */}
       {modalArticle && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h2>{modalArticle.title}</h2>
-            {modalArticle.image && (
-              <img src={modalArticle.image} alt={modalArticle.title} />
+            {modalArticle.urlToImage && (
+              <img src={modalArticle.urlToImage} alt={modalArticle.title} />
             )}
-            <p>{modalArticle.description}</p>
+            <p>{modalArticle.content || modalArticle.description}</p>
             <iframe
               src={modalArticle.url}
               style={{ width: "100%", height: "70vh", border: "none" }}
-            ></iframe>
-            <button onClick={closeModal} className="close-btn">
+            />
+            <button className="close-btn" onClick={closeModal}>
               Close
             </button>
           </div>
