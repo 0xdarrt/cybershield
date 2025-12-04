@@ -1,3 +1,4 @@
+// NewsService.js
 export const fetchCyberNews = async () => {
   try {
     const response = await fetch("/api/fetchNews");
