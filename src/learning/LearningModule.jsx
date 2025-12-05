@@ -431,6 +431,93 @@ function QuizPage() {
   );
 }
 
+function SimulationHome() {
+  return (
+    <div className="p-6 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold text-cyan-200 mb-4">Simulations</h1>
+
+      <div className="grid md:grid-cols-2 gap-4">
+
+        <Card>
+          <h3 className="font-semibold">Phishing Simulator</h3>
+          <p className="text-sm text-gray-400">
+            Spot phishing attempts in an inbox-style interactive challenge.
+          </p>
+          <div className="mt-3">
+            <Link
+              to="/learning/simulations/phishing"
+              className="px-3 py-2 rounded bg-violet-600/40 hover:bg-violet-600"
+            >
+              Open
+            </Link>
+          </div>
+        </Card>
+
+        <Card>
+          <h3 className="font-semibold">Password Strength</h3>
+          <p className="text-sm text-gray-400">
+            Test password strength and learn how attackers crack weak passwords.
+          </p>
+          <div className="mt-3">
+            <Link
+              to="/learning/simulations/password"
+              className="px-3 py-2 rounded bg-violet-600/40 hover:bg-violet-600"
+            >
+              Open
+            </Link>
+          </div>
+        </Card>
+
+        <Card>
+          <h3 className="font-semibold">Firewall Simulator</h3>
+          <p className="text-sm text-gray-400">
+            Learn how rules affect allowed/blocked network traffic.
+          </p>
+          <div className="mt-3">
+            <Link
+              to="/learning/simulations/firewall"
+              className="px-3 py-2 rounded bg-violet-600/40 hover:bg-violet-600"
+            >
+              Open
+            </Link>
+          </div>
+        </Card>
+
+        <Card>
+          <h3 className="font-semibold">XSS Sandbox</h3>
+          <p className="text-sm text-gray-400">
+            Experiment with XSS payloads safely and see sanitization.
+          </p>
+          <div className="mt-3">
+            <Link
+              to="/learning/simulations/xss"
+              className="px-3 py-2 rounded bg-violet-600/40 hover:bg-violet-600"
+            >
+              Open
+            </Link>
+          </div>
+        </Card>
+
+        <Card>
+          <h3 className="font-semibold">SQL Injection Lab</h3>
+          <p className="text-sm text-gray-400">
+            Enter SQL payloads and see how vulnerable queries break.
+          </p>
+          <div className="mt-3">
+            <Link
+              to="/learning/simulations/sqli"
+              className="px-3 py-2 rounded bg-violet-600/40 hover:bg-violet-600"
+            >
+              Open
+            </Link>
+          </div>
+        </Card>
+
+      </div>
+    </div>
+  );
+}
+
 /* ------------------------
    Simulations (Expanded)
    ------------------------ */
