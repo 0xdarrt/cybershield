@@ -10,15 +10,16 @@ const Navbar = () => {
     const { theme, setTheme } = useTheme();
     const location = useLocation();
 
-    const navLinks = [
-        { name: 'Home', path: '/' },
-        { name: 'News', path: '/news' },
-        { name: 'Breaches', path: '/breaches' },
-        { name: 'Threat Intel', path: '/threats' },
-        { name: 'Learn', path: '/learn' },
-        { name: 'Bookmarks', path: '/bookmarks' },
-        { name: 'About', path: '/about' },
-    ];
+const navLinks = [
+    { name: 'Home', path: '/' },
+    { name: 'News', path: '/news' },
+    { name: 'Breaches', path: '/breaches' },
+    { name: 'Threat Intel', path: '/threats' },
+    { name: 'Learn', path: '/learning' },   // <-- IMPORTANT CHANGE
+    { name: 'Bookmarks', path: '/bookmarks' },
+    { name: 'About', path: '/about' },
+];
+
 
     const toggleTheme = () => {
         setTheme(theme === 'dark' ? 'light' : 'dark');
@@ -43,7 +44,7 @@ const Navbar = () => {
                             to={link.path}
                             className={cn(
                                 "text-sm font-medium transition-colors hover:text-primary",
-                                location.pathname === link.path ? "text-primary" : "text-muted-foreground"
+                                location.pathname.startsWith(link.path) ? "text-primary" : "text-muted-foreground"
                             )}
                         >
                             {link.name}
