@@ -22,7 +22,7 @@ function App() {
             <Route path="/resource/:id" element={<ResourcePage />} />
             <Route path="/breaches" element={<BreachAlertsPage />} />
             <Route path="/threats" element={<ThreatIntelligencePage />} />
-            <Route path="/learn" element={<LearningHubPage />} />
+            <Route path="/learning/*" element={<LearningModule />} />
             <Route path="/bookmarks" element={<BookmarksPage />} />
             <Route path="/about" element={<AboutPage />} />
           </Routes>
