@@ -14,20 +14,23 @@ import ResourcePage from './pages/ResourcePage';
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="cybershield-theme">
-      <Router>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/news" element={<NewsPage />} />
-            <Route path="/resource/:id" element={<ResourcePage />} />
-            <Route path="/breaches" element={<BreachAlertsPage />} />
-            <Route path="/threats" element={<ThreatIntelligencePage />} />
-            <Route path="/learning/*" element={<LearningModule />} />
-            <Route path="/bookmarks" element={<BookmarksPage />} />
-            <Route path="/about" element={<AboutPage />} />
-          </Routes>
-        </Layout>
-      </Router>
+     <Router>
+  <ThemeProvider>
+    <Layout>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/news" element={<NewsPage />} />
+        <Route path="/breaches" element={<BreachAlertsPage />} />
+        <Route path="/threats" element={<ThreatIntelligencePage />} />
+        <Route path="/learning/*" element={<LearningModule />} />
+        <Route path="/bookmarks" element={<BookmarksPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/resources" element={<ResourcePage />} />
+      </Routes>
+    </Layout>
+  </ThemeProvider>
+</Router>
+
     </ThemeProvider>
   );
 }
