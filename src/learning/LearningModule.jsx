@@ -7,168 +7,53 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
 
-/* ------------------------
-   Simple localStorage-backed progress context
-   ------------------------ */
-const PROGRESS_KEY = 'cybershield_learning_progress_v1';
-const ProgressContext = createContext(null);
-
-function useProgress() {
-  return useContext(ProgressContext);
-}
-
-function ProgressProvider({ children }) {
-  const [state, setState] = useState(() => {
-    try {
-      const raw = localStorage.getItem(PROGRESS_KEY);
-      return raw ? JSON.parse(raw) : { lessonsCompleted: {}, quizScores: {}, xp: 0, badges: [], tracks: {} };
-    } catch (e) {
-      return { lessonsCompleted: {}, quizScores: {}, xp: 0, badges: [], tracks: {} };
-    }
-  });
-
-  useEffect(() => {
-    localStorage.setItem(PROGRESS_KEY, JSON.stringify(state));
-  }, [state]);
-
-  const markLessonComplete = (id, xp = 10, track) => {
-    setState(prev => {
-      if (prev.lessonsCompleted[id]) return prev; // already done
-      const next = { ...prev, lessonsCompleted: { ...prev.lessonsCompleted, [id]: true }, xp: prev.xp + xp };
-      if (track) next.tracks = { ...next.tracks, [track]: (next.tracks[track] || 0) + 1 };
-      return next;
-    });
-  };
-
-  const recordQuizScore = (quizId, score) => {
-    setState(prev => {
-      const nextScores = { ...prev.quizScores, [quizId]: score };
-      const bonus = Math.max(0, Math.round(score * 0.1));
-      return { ...prev, quizScores: nextScores, xp: prev.xp + bonus };
-    });
-  };
-
-  const awardBadge = (badge) => {
-    setState(prev => {
-      if (prev.badges.includes(badge)) return prev;
-      return { ...prev, badges: [...prev.badges, badge], xp: prev.xp + 20 };
-    });
-  };
-
-  const resetProgress = () => {
-    setState({ lessonsCompleted: {}, quizScores: {}, xp: 0, badges: [], tracks: {} });
-  };
-
+function SimulationHome() {
   return (
-    <ProgressContext.Provider value={{ state, markLessonComplete, recordQuizScore, awardBadge, resetProgress }}>
-      {children}
-    </ProgressContext.Provider>
-  );
-}
-
-/* ------------------------
-   Large content arrays (Lessons, Quizzes, Resources, Tracks)
-   All content lives in this single file so you don't need extra files.
-   You can later move these to JSON files or a backend.
-   ------------------------ */
-const TRACKS = [
-  { id: 'basics', title: 'Cybersecurity Basics' },
-  { id: 'web', title: 'Web Security' },
-  { id: 'network', title: 'Network & Infra' },
-  { id: 'red', title: 'Red Team / Hacking' }
-];
-
-const LESSONS = [
-  { id: 'phishing-101', title: 'What is Phishing?', short: 'Phishing is a social engineering attack used to steal sensitive information.', difficulty: 'Beginner', category: 'Social Engineering', track: 'basics', bullets: ['Attackers impersonate trusted services', 'Fake login portals harvest passwords', 'Always inspect sender and domain'], interactive: 'phishing-sim' },
-  { id: 'passwords-101', title: 'Password Security', short: 'Why long unique passwords and password managers matter.', difficulty: 'Beginner', category: 'Authentication', track: 'basics', bullets: ['Use long passphrases', 'Never reuse passwords', 'Enable MFA'], interactive: 'password-sim' },
-  { id: 'malware-101', title: 'Malware Overview', short: 'Types of malware and common delivery techniques.', difficulty: 'Beginner', category: 'Malware', track: 'basics', bullets: ['Viruses, worms, trojans, ransomware', 'Phishing and malicious downloads', 'Keep software patched'], interactive: 'none' },
-  { id: 'xss-101', title: 'Cross-Site Scripting (XSS)', short: 'How XSS lets attackers run scripts in victim browsers.', difficulty: 'Intermediate', category: 'Web Security', track: 'web', bullets: ['Reflected vs stored XSS', 'Sanitize output and use CSP', 'Use secure templating frameworks'], interactive: 'xss-sim' },
-  { id: 'sqli-101', title: 'SQL Injection (SQLi)', short: 'Manipulating database queries via unsanitized input.', difficulty: 'Intermediate', category: 'Web Security', track: 'web', bullets: ['Use prepared statements', "Classic payloads like ' OR '1'='1'", 'Principle of least privilege for DB users'], interactive: 'sqli-sim' },
-  { id: 'network-basics', title: 'Network Security Basics', short: 'Firewalls, segmentation, VPNs and IDS/IPS.', difficulty: 'Intermediate', category: 'Networking', track: 'network', bullets: ['Firewalls filter traffic', 'Segment critical assets', 'Monitor with IDS/IPS'], interactive: 'firewall-sim' },
-  { id: 'recon-101', title: 'Reconnaissance & OSINT', short: 'How attackers gather information before an attack.', difficulty: 'Intermediate', category: 'Red Team', track: 'red', bullets: ['Use public sources to map targets', 'Passive vs active recon', 'Respect legality and ethics'], interactive: 'none' },
-  { id: 'cloud-iam', title: 'Cloud IAM Basics', short: 'Secure identity & access management for cloud resources.', difficulty: 'Advanced', category: 'Cloud', track: 'network', bullets: ['Principle of least privilege', 'Avoid long-lived keys', 'Use roles and MFA'], interactive: 'none' },
-  { id: 'ransomware-101', title: 'Ransomware Explained', short: 'How ransomware operates and defense strategies.', difficulty: 'Advanced', category: 'Malware', track: 'basics', bullets: ['Backup strategies', 'Network segmentation', 'Incident response planning'], interactive: 'none' },
-  { id: 'bugbounty-101', title: 'Bug Bounty Intro', short: 'Getting started with vulnerability research and responsible disclosure.', difficulty: 'Beginner', category: 'Hacking', track: 'red', bullets: ['Read program policies', 'Start with recon', 'Write concise reports'], interactive: 'none' }
-];
-
-const QUIZZES = [
-  { id: 'quiz-phishing', title: 'Phishing Quiz', questions: [ { id: 'q1', text: 'Which is a sign of phishing?', options: ['Sender mismatch', 'Perfect grammar', 'Long emails', 'AES encryption'], answer: 0 }, { id: 'q2', text: 'A link like https://accounts.verify-login.com is:', options: ['Safe', 'Suspicious', 'Safe if HTTPS', 'From Google'], answer: 1 } ] },
-  { id: 'quiz-passwords', title: 'Password Quiz', questions: [ { id: 'p1', text: 'Best way to store many passwords?', options: ['Browser', 'Password manager', 'Paper', 'Reuse one'], answer: 1 }, { id: 'p2', text: 'MFA stands for?', options: ['Multi-Factor Auth', 'Many Forms Auth', 'My Fancy Auth', 'Multi File Auth'], answer: 0 } ] },
-  { id: 'quiz-malware', title: 'Malware Quiz', questions: [ { id: 'm1', text: 'Which malware encrypts files?', options: ['Worm', 'Trojan', 'Ransomware', 'Adware'], answer: 2 } ] },
-  { id: 'quiz-web', title: 'Web Security Quiz', questions: [ { id: 'w1', text: 'XSS is caused by?', options: ['Unsanitized input', 'Strong passwords', 'Open ports', 'Slow server'], answer: 0 }, { id: 'w2', text: 'SQLi prevention uses?', options: ['Prepared statements', 'MFA', 'Firewall only', 'Cache'], answer: 0 } ] }
-];
-
-const RESOURCES = [
-  { id: 'r1', title: "OWASP Top 10", type: 'Guide', url: 'https://owasp.org/www-project-top-ten/' },
-  { id: 'r2', title: "Web Application Hacker's Handbook", type: 'Book', url: 'https://example.com/whh' },
-  { id: 'r3', title: 'Intro to OSINT', type: 'Article', url: 'https://example.com/osint' }
-];
-
-/* ------------------------
-   Small reusable UI components
-   ------------------------ */
-function Card({ children, className = '' }) {
-  return (
-    <div className={`bg-gray-900/60 border border-gray-700 rounded-2xl p-4 shadow-lg backdrop-blur ${className}`}>
-      {children}
+    <div className="p-6 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold text-cyan-200 mb-4">Simulations</h1>
+      <div className="grid md:grid-cols-2 gap-4">
+        <Card>
+          <h3 className="font-semibold">Phishing Simulator</h3>
+          <p className="text-sm text-gray-400">Spot phishing attempts in an inbox-style interactive challenge.</p>
+          <div className="mt-3">
+            <Link to="/learning/simulations/phishing" className="px-3 py-2 rounded bg-violet-600/40 hover:bg-violet-600">Open</Link>
+          </div>
+        </Card>
+        <Card>
+          <h3 className="font-semibold">Password Strength</h3>
+          <p className="text-sm text-gray-400">Test password strength and learn how attackers crack weak passwords.</p>
+          <div className="mt-3">
+            <Link to="/learning/simulations/password" className="px-3 py-2 rounded bg-violet-600/40 hover:bg-violet-600">Open</Link>
+          </div>
+        </Card>
+        <Card>
+          <h3 className="font-semibold">Firewall Simulator</h3>
+          <p className="text-sm text-gray-400">Learn how rules affect allowed/blocked network traffic.</p>
+          <div className="mt-3">
+            <Link to="/learning/simulations/firewall" className="px-3 py-2 rounded bg-violet-600/40 hover:bg-violet-600">Open</Link>
+          </div>
+        </Card>
+        <Card>
+          <h3 className="font-semibold">XSS Sandbox</h3>
+          <p className="text-sm text-gray-400">Experiment with XSS payloads safely and see sanitization.</p>
+          <div className="mt-3">
+            <Link to="/learning/simulations/xss" className="px-3 py-2 rounded bg-violet-600/40 hover:bg-violet-600">Open</Link>
+          </div>
+        </Card>
+        <Card>
+          <h3 className="font-semibold">SQL Injection Lab</h3>
+          <p className="text-sm text-gray-400">Enter SQL payloads and see how vulnerable queries break.</p>
+          <div className="mt-3">
+            <Link to="/learning/simulations/sqli" className="px-3 py-2 rounded bg-violet-600/40 hover:bg-violet-600">Open</Link>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 }
 
-function Badge({ children, color = 'cyan' }) {
-  const map = { cyan: 'bg-cyan-600/30 text-cyan-200', yellow: 'bg-yellow-600/30 text-yellow-200', red: 'bg-red-600/30 text-red-200' };
-  return <span className={`px-2 py-1 rounded ${map[color] || map.cyan} text-xs font-medium`}>{children}</span>;
-}
-
-function SectionTitle({ children }) {
-  return <h2 className="text-2xl font-semibold mb-2 text-cyan-300">{children}</h2>;
-}
-
 /* ------------------------
-   Learning Pages + Catalog + Filters
-   ------------------------ */
-function LearningHome() {
-  const navigate = useNavigate();
-  const { state, resetProgress } = useProgress();
-  const totalLessons = LESSONS.length;
-  const completed = Object.keys(state.lessonsCompleted).length;
-
-  return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-4xl font-bold text-cyan-200">CyberShield — Learning</h1>
-          <p className="text-sm text-gray-400">Structured tracks, hundreds of lessons — start from basics to advanced.</p>
-        </div>
-        <div className="text-right">
-          <div className="text-sm text-gray-300">XP: <span className="font-mono">{state.xp}</span></div>
-          <div className="text-xs text-gray-400">Badges: {state.badges.join(', ') || '—'}</div>
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-4 gap-4 mb-6">
-        <Card>
-          <SectionTitle>Progress</SectionTitle>
-          <div className="text-gray-300">Completed {completed} / {totalLessons} lessons</div>
-          <div className="mt-3">
-            <button onClick={() => navigate('/learning/catalog')} className="px-3 py-2 rounded bg-cyan-600/40">Open Catalog</button>
-            <button onClick={() => resetProgress()} className="ml-2 px-3 py-2 rounded border">Reset</button>
-          </div>
-        </Card>
-
-        <Card>
-          <SectionTitle>Popular Tracks</SectionTitle>
-          <div className="flex flex-col gap-2">
-            {TRACKS.map(t => (
-              <Link key={t.id} to={`/learning/track/${t.id}`} className="text-sm text-gray-200 hover:text-cyan-300">{t.title}</Link>
-            ))}
-          </div>
-        </Card>
-
-        <Card>
-          <SectionTitle>Quick Actions</SectionTitle>
-          <div className="flex flex-col gap-2">
-            <Link to="/learning/simulations" className="px-3 py-2 rounded bg-violet-600/30">Open Simulations</Link>
+   Simulations</Link>
             <Link to="/learning/resources" className="px-3 py-2 rounded bg-emerald-600/30">Resources Library</Link>
           </div>
         </Card>
@@ -427,93 +312,6 @@ function QuizPage() {
           )}
         </div>
       </Card>
-    </div>
-  );
-}
-
-function SimulationHome() {
-  return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold text-cyan-200 mb-4">Simulations</h1>
-
-      <div className="grid md:grid-cols-2 gap-4">
-
-        <Card>
-          <h3 className="font-semibold">Phishing Simulator</h3>
-          <p className="text-sm text-gray-400">
-            Spot phishing attempts in an inbox-style interactive challenge.
-          </p>
-          <div className="mt-3">
-            <Link
-              to="/learning/simulations/phishing"
-              className="px-3 py-2 rounded bg-violet-600/40 hover:bg-violet-600"
-            >
-              Open
-            </Link>
-          </div>
-        </Card>
-
-        <Card>
-          <h3 className="font-semibold">Password Strength</h3>
-          <p className="text-sm text-gray-400">
-            Test password strength and learn how attackers crack weak passwords.
-          </p>
-          <div className="mt-3">
-            <Link
-              to="/learning/simulations/password"
-              className="px-3 py-2 rounded bg-violet-600/40 hover:bg-violet-600"
-            >
-              Open
-            </Link>
-          </div>
-        </Card>
-
-        <Card>
-          <h3 className="font-semibold">Firewall Simulator</h3>
-          <p className="text-sm text-gray-400">
-            Learn how rules affect allowed/blocked network traffic.
-          </p>
-          <div className="mt-3">
-            <Link
-              to="/learning/simulations/firewall"
-              className="px-3 py-2 rounded bg-violet-600/40 hover:bg-violet-600"
-            >
-              Open
-            </Link>
-          </div>
-        </Card>
-
-        <Card>
-          <h3 className="font-semibold">XSS Sandbox</h3>
-          <p className="text-sm text-gray-400">
-            Experiment with XSS payloads safely and see sanitization.
-          </p>
-          <div className="mt-3">
-            <Link
-              to="/learning/simulations/xss"
-              className="px-3 py-2 rounded bg-violet-600/40 hover:bg-violet-600"
-            >
-              Open
-            </Link>
-          </div>
-        </Card>
-
-        <Card>
-          <h3 className="font-semibold">SQL Injection Lab</h3>
-          <p className="text-sm text-gray-400">
-            Enter SQL payloads and see how vulnerable queries break.
-          </p>
-          <div className="mt-3">
-            <Link
-              to="/learning/simulations/sqli"
-              className="px-3 py-2 rounded bg-violet-600/40 hover:bg-violet-600"
-            >
-              Open
-            </Link>
-          </div>
-        </Card>
-
-      </div>
     </div>
   );
 }
