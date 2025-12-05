@@ -6,7 +6,7 @@ import HomePage from './pages/HomePage';
 import NewsPage from './pages/NewsPage';
 import BreachAlertsPage from './pages/BreachAlertsPage';
 import ThreatIntelligencePage from './pages/ThreatIntelligencePage';
-import LearningHubPage from './pages/LearningHubPage';
+import LearningModule from "./learning/LearningModule";
 import BookmarksPage from './pages/BookmarksPage';
 import AboutPage from './pages/AboutPage';
 import ResourcePage from './pages/ResourcePage';
