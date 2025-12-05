@@ -1,57 +1,62 @@
-import React from 'react';
-import { Shield, Github, Twitter, Mail } from 'lucide-react';
+import React from "react";
+import { Shield, Users, Target, Sparkles } from "lucide-react";
 
-const AboutPage = () => {
-    return (
-        <div className="max-w-3xl mx-auto py-12 space-y-12">
-            <section className="text-center space-y-6">
-                <div className="inline-block p-4 bg-primary/10 rounded-full mb-4">
-                    <Shield className="h-16 w-16 text-primary" />
-                </div>
-                <h1 className="text-4xl font-bold">About CyberShield</h1>
-                <p className="text-xl text-muted-foreground leading-relaxed">
-                    CyberShield is an open-source threat intelligence hub designed to keep security professionals and everyday users ahead of the curve.
-                </p>
-            </section>
+export default function AboutPage() {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-gray-100 p-6">
+      <div className="max-w-4xl mx-auto">
 
-            <section className="bg-card border border-border rounded-2xl p-8 space-y-6">
-                <h2 className="text-2xl font-bold">Our Mission</h2>
-                <p className="text-muted-foreground">
-                    In an era of increasing digital threats, information is your best defense. We aggregate real-time data from trusted sources to provide a comprehensive view of the global threat landscape.
-                </p>
+        <h1 className="text-4xl font-bold text-cyan-300 flex items-center gap-3 mb-6">
+          <Shield className="h-8 w-8" />
+          About CyberShield
+        </h1>
 
-                <div className="grid md:grid-cols-3 gap-6 pt-4">
-                    <div className="text-center p-4">
-                        <div className="text-3xl font-bold text-primary mb-2">24/7</div>
-                        <div className="text-sm text-muted-foreground">Monitoring</div>
-                    </div>
-                    <div className="text-center p-4">
-                        <div className="text-3xl font-bold text-accent mb-2">100+</div>
-                        <div className="text-sm text-muted-foreground">Data Sources</div>
-                    </div>
-                    <div className="text-center p-4">
-                        <div className="text-3xl font-bold text-green-500 mb-2">Free</div>
-                        <div className="text-sm text-muted-foreground">For Everyone</div>
-                    </div>
-                </div>
-            </section>
+        <p className="text-gray-300 text-lg mb-6">
+          CyberShield is an open cybersecurity learning & automation platform 
+          designed to help users stay safe, informed, and prepared against 
+          real-world security threats.
+        </p>
 
-            <section className="text-center space-y-6">
-                <h2 className="text-2xl font-bold">Connect With Us</h2>
-                <div className="flex justify-center gap-6">
-                    <a href="#" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
-                        <Github className="h-5 w-5" /> GitHub
-                    </a>
-                    <a href="#" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
-                        <Twitter className="h-5 w-5" /> Twitter
-                    </a>
-                    <a href="#" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
-                        <Mail className="h-5 w-5" /> Contact
-                    </a>
-                </div>
-            </section>
+        <div className="grid md:grid-cols-2 gap-6">
+
+          <div className="bg-gray-900/60 border border-gray-700 rounded-xl p-5">
+            <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-yellow-400" />
+              Mission
+            </h2>
+            <p className="text-gray-400">
+              Make cybersecurity education accessible, practical, and interactive.
+            </p>
+          </div>
+
+          <div className="bg-gray-900/60 border border-gray-700 rounded-xl p-5">
+            <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
+              <Target className="h-5 w-5 text-red-400" />
+              What We Offer
+            </h2>
+            <ul className="list-disc pl-5 text-gray-400">
+              <li>Real-time threat intelligence</li>
+              <li>Breach detection</li>
+              <li>Interactive learning modules</li>
+              <li>Simulations for hacking & defense</li>
+            </ul>
+          </div>
+
         </div>
-    );
-};
 
-export default AboutPage;
+        <div className="bg-gray-900/60 border border-gray-700 rounded-xl p-5 mt-6">
+          <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
+            <Users className="h-5 w-5 text-purple-400" />
+            Built By
+          </h2>
+          <p className="text-gray-400">
+            CyberShield is developed by security enthusiasts to help spread 
+            awareness and education about cyber threats, privacy, and digital 
+            safety.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  );
+}
