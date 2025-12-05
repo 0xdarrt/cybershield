@@ -1,109 +1,245 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Shield, AlertTriangle, Activity, BookOpen, ArrowRight, Zap } from 'lucide-react';
-import { motion } from 'framer-motion';
+// Home.jsx — Redesigned CyberShield Home Page
+// Fully modern, cyberpunk-inspired, responsive dashboard-style homepage
+// Uses: TailwindCSS, Framer Motion, Lucide Icons
+// Drop this into: src/pages/Home.jsx or wherever your home route points
 
-const HomePage = () => {
-    return (
-        <div className="space-y-16">
-            {/* Hero Section */}
-            <section className="text-center py-20 relative overflow-hidden">
-                {/* Animated Background Elements */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl -z-10 animate-pulse-fast" />
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  Shield,
+  Activity,
+  BookOpen,
+  Bug,
+  MailSearch,
+  ArrowRight,
+  Radio,
+  BrainCircuit,
+  CalendarDays,
+} from "lucide-react";
 
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                >
-                    <div className="inline-block px-4 py-1 mb-6 border border-primary/30 rounded-full bg-primary/5 text-primary font-mono text-sm">
-                        <span className="animate-pulse mr-2">●</span>
-                        SYSTEM_STATUS: ONLINE
-                    </div>
-                    <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 tracking-tight text-white">
-                        STAY AHEAD OF <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary text-glow">CYBER THREATS</span>
-                    </h1>
-                    <p className="text-xl text-muted max-w-2xl mx-auto mb-10 leading-relaxed">
-                        Real-time intelligence hub for security professionals. Monitor breaches, track zero-days, and analyze global threat vectors.
-                    </p>
-                    <div className="flex justify-center gap-4">
-                        <Link to="/news" className="btn-cyber flex items-center gap-2">
-                            <Activity className="w-4 h-4" /> Live Intel Feed
-                        </Link>
-                        <Link to="/breaches" className="px-6 py-2 font-mono font-bold uppercase tracking-wider border border-white/20 text-white hover:bg-white/5 transition-colors">
-                            Scan Assets
-                        </Link>
-                    </div>
-                </motion.div>
-            </section>
+export default function Home() {
+  const [threatCount, setThreatCount] = useState(0);
+  const [breachCount, setBreachCount] = useState(0);
+  const [cveCount, setCveCount] = useState(0);
 
-            {/* Threat Level Meter */}
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 }}
-                className="max-w-2xl mx-auto bg-surface border border-accent/50 rounded-xl p-8 relative overflow-hidden shadow-neon-red/20"
-            >
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 via-yellow-500 to-red-600" />
+  // Fake auto-update counters (replace with your live APIs)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setThreatCount((t) => t + Math.floor(Math.random() * 5));
+      setBreachCount((b) => b + Math.floor(Math.random() * 2));
+      setCveCount((c) => c + Math.floor(Math.random() * 3));
+    }, 2500);
+    return () => clearInterval(interval);
+  }, []);
 
-                <div className="flex justify-between items-center mb-6">
-                    <div>
-                        <h2 className="text-sm font-mono text-muted mb-1">GLOBAL_THREAT_DEFCON</h2>
-                        <div className="text-4xl font-display font-black text-accent animate-pulse text-glow">CRITICAL</div>
-                    </div>
-                    <Shield className="w-16 h-16 text-accent/20" />
-                </div>
+  const fadeIn = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
 
-                <div className="grid grid-cols-3 gap-4 text-center">
-                    <div className="bg-black/40 p-3 rounded border border-white/10">
-                        <div className="text-xs text-muted font-mono">CVE_COUNT</div>
-                        <div className="text-xl font-bold text-white">1,204</div>
-                    </div>
-                    <div className="bg-black/40 p-3 rounded border border-white/10">
-                        <div className="text-xs text-muted font-mono">ATTACKS/MIN</div>
-                        <div className="text-xl font-bold text-white">45k</div>
-                    </div>
-                    <div className="bg-black/40 p-3 rounded border border-white/10">
-                        <div className="text-xs text-muted font-mono">STATUS</div>
-                        <div className="text-xl font-bold text-accent">ELEVATED</div>
-                    </div>
-                </div>
-            </motion.div>
-
-            {/* Quick Links Grid */}
-            <div className="grid md:grid-cols-3 gap-6">
-                <QuickLinkCard
-                    to="/news"
-                    icon={<Zap className="h-8 w-8 text-secondary" />}
-                    title="Live News"
-                    desc="Real-time updates on vulnerabilities and attacks."
-                />
-                <QuickLinkCard
-                    to="/breaches"
-                    icon={<AlertTriangle className="h-8 w-8 text-accent" />}
-                    title="Breach Alerts"
-                    desc="Search recent data leaks and verify your email."
-                />
-                <QuickLinkCard
-                    to="/learn"
-                    icon={<BookOpen className="h-8 w-8 text-primary" />}
-                    title="Learning Hub"
-                    desc="Master cyber hygiene and defense tactics."
-                />
-            </div>
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-white p-6 md:p-10">
+      {/* HERO SECTION */}
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={fadeIn}
+        transition={{ duration: 0.6 }}
+        className="max-w-5xl mx-auto text-center"
+      >
+        <div className="flex justify-center mb-4">
+          <Shield className="h-16 w-16 text-cyan-400 drop-shadow-lg" />
         </div>
-    );
-};
+        <h1 className="text-4xl md:text-6xl font-bold mb-3 tracking-tight">
+          Welcome to <span className="text-cyan-400">CyberShield</span>
+        </h1>
+        <p className="text-gray-300 max-w-2xl mx-auto text-lg">
+          Real-time threat intelligence, breach detection, cyber learning & smart
+automation — all in one unified security dashboard.
+        </p>
 
-const QuickLinkCard = ({ to, icon, title, desc }) => (
-    <Link to={to} className="block group">
-        <div className="card-cyber p-6 h-full">
-            <div className="mb-4 group-hover:scale-110 transition-transform duration-300">{icon}</div>
-            <h3 className="text-xl font-display font-bold mb-2 text-white group-hover:text-primary transition-colors">{title}</h3>
-            <p className="text-muted text-sm leading-relaxed">{desc}</p>
+        <div className="mt-6 flex justify-center gap-4 flex-wrap">
+          <Link
+            to="/learning"
+            className="px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 font-semibold flex items-center gap-2"
+          >
+            Start Learning <ArrowRight className="h-4 w-4" />
+          </Link>
+          <Link
+            to="/breaches"
+            className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-semibold flex items-center gap-2"
+          >
+            Scan Email <MailSearch className="h-4 w-4" />
+          </Link>
         </div>
+      </motion.div>
+
+      {/* LIVE STATS */}
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={fadeIn}
+        transition={{ duration: 0.7, delay: 0.1 }}
+        className="max-w-5xl mx-auto mt-16 grid md:grid-cols-3 gap-6"
+      >
+        <StatCard
+          icon={<Activity className="h-8 w-8 text-red-400" />}
+          title="Live Threats Today"
+          value={threatCount}
+          gradient="from-red-600/30 to-red-800/30"
+        />
+
+        <StatCard
+          icon={<Bug className="h-8 w-8 text-yellow-400" />}
+          title="Breaches Reported"
+          value={breachCount}
+          gradient="from-yellow-600/30 to-yellow-800/30"
+        />
+
+        <StatCard
+          icon={<Radio className="h-8 w-8 text-purple-400" />}
+          title="New CVEs Today"
+          value={cveCount}
+          gradient="from-purple-600/30 to-purple-800/30"
+        />
+      </motion.div>
+
+      {/* QUICK ACTIONS */}
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={fadeIn}
+        transition={{ duration: 0.7, delay: 0.2 }}
+        className="max-w-5xl mx-auto mt-16 grid md:grid-cols-4 gap-6"
+      >
+        <ActionCard
+          title="Learning Hub"
+          icon={<BookOpen className="h-9 w-9 text-cyan-400" />}
+          to="/learning"
+          desc="Interactive lessons, quizzes & simulations"
+        />
+
+        <ActionCard
+          title="Breach Detector"
+          icon={<MailSearch className="h-9 w-9 text-emerald-400" />}
+          to="/breaches"
+          desc="Check if your email was exposed"
+        />
+
+        <ActionCard
+          title="Threat Intel"
+          icon={<BrainCircuit className="h-9 w-9 text-yellow-400" />}
+          to="/threats"
+          desc="Live cyber threat feeds & indicators"
+        />
+
+        <ActionCard
+          title="News Feed"
+          icon={<CalendarDays className="h-9 w-9 text-pink-400" />}
+          to="/news"
+          desc="Latest cybersecurity updates"
+        />
+      </motion.div>
+
+      {/* LEARNING SECTION HIGHLIGHT */}
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={fadeIn}
+        transition={{ duration: 0.7, delay: 0.3 }}
+        className="max-w-5xl mx-auto mt-20 rounded-2xl bg-gradient-to-br from-cyan-900/20 to-blue-900/20 p-10 border border-cyan-700/40"
+      >
+        <h2 className="text-3xl font-bold text-cyan-300 mb-3">Continue Learning</h2>
+        <p className="text-gray-300 mb-6">
+          Short lessons ● Interactive quizzes ● Real-world simulations
+        </p>
+
+        <Link
+          to="/learning"
+          className="inline-flex items-center gap-2 px-5 py-3 bg-cyan-600 hover:bg-cyan-500 rounded-xl font-semibold"
+        >
+          Go to Learning Center <ArrowRight className="h-4 w-4" />
+        </Link>
+      </motion.div>
+
+      {/* NEWS PREVIEW (STATIC, replace with real data) */}
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={fadeIn}
+        transition={{ duration: 0.7, delay: 0.4 }}
+        className="max-w-5xl mx-auto mt-20"
+      >
+        <h2 className="text-3xl font-bold text-pink-300 mb-6">Top Cyber News</h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          <NewsCard
+            title="Major Supply-Chain Attack Detected"
+            source="CyberDaily"
+          />
+          <NewsCard
+            title="New Ransomware Variant Spreading Rapidly"
+            source="SecurityWire"
+          />
+          <NewsCard
+            title="0-Day Vulnerability Found in Popular App"
+            source="ThreatWatch"
+          />
+        </div>
+
+        <div className="text-center mt-6">
+          <Link
+            to="/news"
+            className="px-6 py-3 bg-pink-600 hover:bg-pink-500 rounded-xl font-semibold inline-flex items-center gap-2"
+          >
+            View All News <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </motion.div>
+
+      <div className="h-20" />
+    </div>
+  );
+}
+
+/* ------------------ COMPONENTS ------------------ */
+function StatCard({ icon, title, value, gradient }) {
+  return (
+    <div
+      className={`p-6 rounded-2xl bg-gradient-to-br ${gradient} border border-white/10 shadow-xl`}
+    >
+      <div className="flex items-center gap-3 mb-3">{icon}
+        <h3 className="text-lg font-semibold">{title}</h3>
+      </div>
+      <div className="text-4xl font-bold tracking-tight text-white drop-shadow-lg">
+        {value}
+      </div>
+    </div>
+  );
+}
+
+function ActionCard({ title, icon, desc, to }) {
+  return (
+    <Link
+      to={to}
+      className="p-6 rounded-2xl bg-gray-900/50 border border-white/5 hover:bg-gray-800 transition block shadow-lg"
+    >
+      <div className="flex items-center gap-3 mb-2">{icon}
+        <h3 className="text-lg font-semibold">{title}</h3>
+      </div>
+      <p className="text-gray-400 text-sm">{desc}</p>
     </Link>
-);
+  );
+}
 
-export default HomePage;
+function NewsCard({ title, source }) {
+  return (
+    <div className="p-6 bg-gray-900/50 rounded-2xl border border-white/5 shadow-md hover:bg-gray-800 transition h-full">
+      <h3 className="font-semibold mb-2 text-white">{title}</h3>
+      <p className="text-xs text-gray-400 mb-4">Source: {source}</p>
+      <button className="text-sm text-pink-400 hover:text-pink-300 inline-flex items-center gap-1">
+        Read More <ArrowRight className="h-3 w-3" />
+      </button>
+    </div>
+  );
+}
