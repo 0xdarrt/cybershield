@@ -18,10 +18,13 @@ export default function Navbar() {
     { name: "About", path: "/about" },
   ];
 
+  const toggleTheme = () =>
+    setTheme(theme === "dark" ? "light" : "dark");
+
   return (
     <nav className="sticky top-0 z-50 bg-gray-900/80 backdrop-blur border-b border-gray-700">
       <div className="container mx-auto h-16 px-4 flex items-center justify-between">
-        
+
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2">
           <Shield className="h-8 w-8 text-cyan-400" />
@@ -36,10 +39,10 @@ export default function Navbar() {
             <Link
               key={link.path}
               to={link.path}
-              className={`text-sm font-medium hover:text-cyan-400 transition ${
+              className={`text-sm font-medium transition ${
                 location.pathname.startsWith(link.path)
                   ? "text-cyan-400"
-                  : "text-gray-300"
+                  : "text-gray-300 hover:text-cyan-400"
               }`}
             >
               {link.name}
@@ -48,13 +51,13 @@ export default function Navbar() {
 
           {/* Theme toggle */}
           <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            onClick={toggleTheme}
             className="p-2 rounded-full hover:bg-gray-700 transition"
           >
             {theme === "dark" ? (
-              <Sun className="h-5 w-5 text-yellow-300" />
+              <Sun className="h-5 w-5" />
             ) : (
-              <Moon className="h-5 w-5 text-blue-300" />
+              <Moon className="h-5 w-5" />
             )}
           </button>
         </div>
@@ -71,7 +74,7 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-gray-900 border-t border-gray-700 py-4">
-          <div className="flex flex-col space-y-4 px-4">
+          <div className="flex flex-col px-4 space-y-4">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
@@ -87,9 +90,8 @@ export default function Navbar() {
               </Link>
             ))}
 
-            {/* Theme toggle */}
             <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              onClick={toggleTheme}
               className="p-2 rounded hover:bg-gray-700 w-fit"
             >
               {theme === "dark" ? <Sun /> : <Moon />}
