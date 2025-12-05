@@ -1,9 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-const ThemeProviderContext = createContext({
-    theme: "dark",
-    setTheme: () => null,
-});
+const ThemeProviderContext = createContext();
 
 export function ThemeProvider({
     children,
@@ -14,27 +11,26 @@ export function ThemeProvider({
         () => localStorage.getItem(storageKey) || defaultTheme
     );
 
+    // Apply theme to <html> element
     useEffect(() => {
-        const root = window.document.documentElement;
+        const root = document.documentElement;
         root.classList.remove("light", "dark");
 
         if (theme === "system") {
-            const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-                .matches
+            const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
                 ? "dark"
                 : "light";
             root.classList.add(systemTheme);
-            return;
+        } else {
+            root.classList.add(theme);
         }
-
-        root.classList.add(theme);
     }, [theme]);
 
     const value = {
         theme,
-        setTheme: (theme) => {
-            localStorage.setItem(storageKey, theme);
-            setTheme(theme);
+        setTheme: (newTheme) => {
+            setTheme(newTheme);
+            localStorage.setItem(storageKey, newTheme);
         },
     };
 
@@ -46,8 +42,7 @@ export function ThemeProvider({
 }
 
 export const useTheme = () => {
-    const context = useContext(ThemeProviderContext);
-    if (context === undefined)
-        throw new Error("useTheme must be used within a ThemeProvider");
-    return context;
+    const ctx = useContext(ThemeProviderContext);
+    if (!ctx) throw new Error("useTheme must be used inside ThemeProvider");
+    return ctx;
 };
